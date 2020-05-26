@@ -6,11 +6,24 @@ def split(word):
     return [char for char in word] 
 
 
+
 word = str(input("Enter the word:"))
 
 word = split(word)
 
+guessed = []
+
+guess = str(input("Guess a letter: "))
+
+guessed.append(guess)
 
 for i in word:
-    print("_", end=" ")
+    letter = False
+    for j in guessed:
+        if i==j:
+            letter = True
+    if letter:
+        print(i, end = " ")
+    else:
+        print("_", end=" ")
 
