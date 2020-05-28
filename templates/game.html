@@ -6,4 +6,10 @@
 
 {% block body %}
 <h1>Let's play hangman</h1>
+<form method="POST">
+<input class="form-control" name="letter" id="letter" type="text" placeholder="Enter Letter"aria-label="Enter Letter">
+<br>
+<input type="submit" value='Post'>
+</form>
+{{ game }}
 {% endblock body %}
