@@ -7,11 +7,9 @@
 {% block body %}
 <h1>Let's play hangman</h1>
 <form method="POST">
-<input class="form-control" name="letter" id="letter" type="text" placeholder="Enter Letter"aria-label="Enter Letter">
+<input class="form-control" name="word" id="word" type="text" placeholder="Enter Word"aria-label="Enter Letter">
 <br>
 <input type="submit" value='Post'>
 </form>
 {{ game }}
-<br>
-{{ noGuess }}
 {% endblock body %}

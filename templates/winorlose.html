@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Let's play hangman</title>
+{% endblock head %}
+
+{% block body %}
+<h1>Let's play hangman</h1>
+<h2>YOU {{ winorlose }}!</h2>
+<p>The word was {{ word }}</p>
+<a class="btn btn-primary" href="/word" role="button">Play Again &raquo;</a>
+{% endblock body %}
