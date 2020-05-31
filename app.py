@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect
-from game import gameUI, reset
+from game import gameUI
 
 app = Flask(__name__)
 guess = ""
@@ -8,6 +8,15 @@ guessed = []
 word = ""
 noGuess = 0
 
+# function: resets all variables
+def reset():
+    global guessed
+    global word
+    global guess
+    guessed = []
+    word = ""
+    guess = ""
+    return word, guessed, guess
 
 @app.route('/')
 def index():
@@ -19,7 +28,7 @@ def word():
     global word
     global guessed
     if request.method == 'POST':
-        word,guessed = reset()
+        reset()
         word = request.form['word'].lower()
         return redirect('/game')
     else:
@@ -41,9 +50,9 @@ def game():
         game, noGuess = gameUI(word, guess, guessed, noGuess)
         if game == word or noGuess>=8:
             return render_template('winorlose.html', word=word, winorlose='WIN' if game == word else 'LOSE')
-            word,guessed = reset()
+            reset()
         else:
-            return render_template('game.html', game=game, noGuess=noGuess)
+            return render_template('game.html', game=game, noGuess=8-noGuess)
 
 
 if __name__ == "__main__":

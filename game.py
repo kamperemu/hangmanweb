@@ -27,8 +27,4 @@ def gameUI(word, guess, guessed, noGuess):
     return game, noGuess
 
 
-# function: resets all variables
-def reset():
-    guessed = []
-    word = ""
-    return word, guessed
+
