@@ -1,22 +1,11 @@
-from flask import Flask, render_template, request, redirect
-from game import gameUI
+from flask import Flask, render_template, request, redirect, session
+from flask_session import Session
+from game import Game, check_word
 
 app = Flask(__name__)
-guess = ""
-game = ""
-guessed = []
-word = ""
-noGuess = 0
-
-# function: resets all variables
-def reset():
-    global guessed
-    global word
-    global guess
-    guessed = []
-    word = ""
-    guess = ""
-    return word, guessed, guess
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
 
 @app.route('/')
 def index():
@@ -25,11 +14,12 @@ def index():
 
 @app.route('/word', methods=['GET', 'POST'])
 def word():
-    global word
-    global guessed
     if request.method == 'POST':
-        reset()
-        word = request.form['word'].lower()
+        word = request.form['word']
+        if check_word(word):
+            session["Game"] = Game(word)
+        else:
+            return redirect("/word")
         return redirect('/game')
     else:
         return render_template('word.html')
@@ -38,21 +28,16 @@ def word():
 
 @app.route('/game', methods=['GET', 'POST'])
 def game():
-    global noGuess
-    global word
-    global guess
-    global game
-    global guessed
     if request.method == 'POST':
         guess = request.form['letter']
+        if len(guess) == 1:
+            session["Game"].playerGuess(guess)
         return redirect('/game')
     else:
-        game, noGuess = gameUI(word, guess, guessed, noGuess)
-        if game == word or noGuess>=8:
-            return render_template('winorlose.html', word=word, winorlose='WIN' if game == word else 'LOSE')
-            reset()
+        if not session["Game"].continueGameLoop():
+            return render_template('winorlose.html', word=session["Game"].word, winorlose='WIN' if session["Game"].isWin() else 'LOSE')
         else:
-            return render_template('game.html', game=game, noGuess=8-noGuess)
+            return render_template('game.html', game=str(session["Game"]), noGuess=session["Game"].guessLeft())
 
 
 if __name__ == "__main__":

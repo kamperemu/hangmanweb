@@ -1,30 +1,61 @@
-# misc
-def split(word):
-    return [char for char in word]
+import requests
 
+def check_word(word):
+    url = f"https://api.dictionaryapi.dev/api/v2/entries/en/{word}"
+    if requests.get(url).status_code == 200:
+        return True
+    return False
 
-# function: shows how much progress the player has made
-def guessUI(word, guessed, noGuess):
-    guessUI = ""
-    noGuess = len([x for x in guessed if x not in word]) - 1
-    for i in word:
-        letter = False
-        for j in guessed:
-            if i == j:
-                letter = True
-        if letter:
-            guessUI += i
-        else:
-            guessUI += "_"
-    return guessUI, noGuess
+class Game:
 
+    def __init__(self, word, noGuess=8):
+        self.word = word.lower()
+        self.noGuess = noGuess
+        self.guessed = []
 
-# function: the game itself
-def gameUI(word, guess, guessed, noGuess):
-    wordlist = split(word)
-    guessed.append(guess)
-    game, noGuess = guessUI(wordlist, guessed, noGuess)
-    return game, noGuess
+    # function: shows how much progress the player has made
+    def guessUI(self):
+        self.guessStr = ""
+        for letter in self.word:
+            if letter in self.guessed:
+                self.guessStr += letter
+            else:
+                self.guessStr += "_"
 
+    # function: finds number of guesses left
+    def guessLeft(self):
+        return self.noGuess - len(self.guessed)
 
+    # function: appends player's guess
+    def playerGuess(self, guess):
+        guess = guess.lower()
+        if guess not in self.guessed:
+            self.guessed.append(guess)
+
+    # function: that checks if game is won
+    def isWin(self):
+        if str(self) == self.word:
+            return True
+        return False
+
+    # function: that checks if game loop should continue
+    def continueGameLoop(self):
+        if self.isWin() or self.noGuess <= len(self.guessed):
+            return False
+        return True
+
+    # function: that generates string
+    def __str__(self):
+        self.guessUI()
+        return self.guessStr
+
+if __name__ == "__main__":
+    newGame = Game("hello", 10)
+    while newGame.continueGameLoop():
+        newGame.playerGuess(input())
+        print(str(newGame))
+    if newGame.isWin():
+        print(f"You Win! The word is {newGame.word}")
+    else:
+        print(f"You Lose! The word is {newGame.word}")
 
