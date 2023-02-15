@@ -50,9 +50,13 @@ class Game:
         return self.guessStr
 
 if __name__ == "__main__":
-    newGame = Game("hello", 10)
+    word = input("Enter Word:")
+    if check_word(word):
+        newGame = Game(word, 8)
     while newGame.continueGameLoop():
-        newGame.playerGuess(input())
+        guess = input("> ")
+        if len(guess) == 1:
+            newGame.playerGuess(guess)
         print(str(newGame))
     if newGame.isWin():
         print(f"You Win! The word is {newGame.word}")
